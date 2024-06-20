@@ -46,6 +46,37 @@
             HTML</button>
     </div>
 
+    <div class="layui-form-item">
+        <div class="layui-input-inline layui-col-md6">
+            <select id="filter-field">
+                <option></option>
+                <option value="name">Name</option>
+                <option value="age">Age</option>
+                <option value="col">Favourite Colour</option>
+                <option value="dob">Date Of Birth</option>
+            </select>
+        </div>
+        <div class="layui-input-inline  layui-col-md6">
+            <select id="filter-type">
+                <option value="=">=</option>
+                <option value="<">
+                    < </option>
+                <option value="<=">
+                    <= </option>
+                <option value=">">></option>
+                <option value=">=">>=</option>
+                <option value="!=">!=</option>
+                <option value="like">like</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <input class="layui-input" id="filter-value" type="text" placeholder="value to filter">
+        </div>
+        <button id="filter-clear" type="button" class="layui-btn layui-btn-normal layui-btn-radius">Clear
+            Filter</button>
+    </div>
+
+
     <div id="example-table"></div>
     <script type="text/javascript">
         //sample data
@@ -70,6 +101,44 @@
             ],
         });
 
+        //Define variables for input elements
+        var fieldEl = document.getElementById("filter-field");
+        var typeEl = document.getElementById("filter-type");
+        var valueEl = document.getElementById("filter-value");
+
+        //Trigger setFilter function with correct parameters
+        function updateFilter() {
+            var filterVal = fieldEl.options[fieldEl.selectedIndex].value;
+            var typeVal = typeEl.options[typeEl.selectedIndex].value;
+
+            var filter = filterVal == "function" ? customFilter : filterVal;
+
+            if (filterVal == "function") {
+                typeEl.disabled = true;
+                valueEl.disabled = true;
+            } else {
+                typeEl.disabled = false;
+                valueEl.disabled = false;
+            }
+
+            if (filterVal) {
+                table.setFilter(filter, typeVal, valueEl.value);
+            }
+        }
+
+        //Update filters on value change
+        document.getElementById("filter-field").addEventListener("change", updateFilter);
+        document.getElementById("filter-type").addEventListener("change", updateFilter);
+        document.getElementById("filter-value").addEventListener("keyup", updateFilter);
+
+        //Clear filters on "Clear Filters" button click
+        document.getElementById("filter-clear").addEventListener("click", function () {
+            fieldEl.value = "";
+            typeEl.value = "=";
+            valueEl.value = "";
+
+            table.clearFilter();
+        });
         //trigger an alert message when the row is clicked
         table.on("rowClick", function (e, row) {
             alert("Row " + row.getIndex() + " Clicked!!!!");
