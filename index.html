@@ -44,11 +44,13 @@
             PDF</button>
         <button id="download-html" type="button" class="layui-btn layui-btn-normal layui-btn-radius">Download
             HTML</button>
+        <button id="print" type="button" class="layui-btn layui-btn-normal layui-btn-radius"><i
+                class="layui-icon layui-icon-print"></i>print</button>
     </div>
 
-    <div class="layui-form-item">
+    <div class="layui-form layui-form-item  layui-col-space32">
         <div class="layui-input-inline layui-col-md6">
-            <select id="filter-field">
+            <select id="filter-field" lay-search="">
                 <option></option>
                 <option value="name">Name</option>
                 <option value="age">Age</option>
@@ -57,7 +59,7 @@
             </select>
         </div>
         <div class="layui-input-inline  layui-col-md6">
-            <select id="filter-type">
+            <select id="filter-type" lay-search="cs">
                 <option value="=">=</option>
                 <option value="<">
                     < </option>
@@ -72,8 +74,10 @@
         <div class="layui-input-inline">
             <input class="layui-input" id="filter-value" type="text" placeholder="value to filter">
         </div>
-        <button id="filter-clear" type="button" class="layui-btn layui-btn-normal layui-btn-radius">Clear
-            Filter</button>
+        <div class="layui-input-inline">
+            <button id="filter-clear" type="button" class="layui-btn layui-btn-normal layui-btn-radius">Clear
+                Filter</button>
+        </div>
     </div>
 
 
@@ -92,12 +96,16 @@
             height: 200, // set height of table to enable virtual DOM
             rowHeight: 35, //set rows to 40px height
             data: tabledata, //load initial data into table
+            printHeader: "<h1>Example Table Header<h1>",
+            printFooter: "<h2>Example Table Footer<h2>",
+
             layout: "fitColumns", //fit columns to width of table (optional)
             columns: [ //Define Table Columns
+                { formatter: "rownum", hozAlign: "center", width: 40, headerSort: false },
                 { title: "Name", field: "name", sorter: "string", width: 150 },
                 { title: "Age", field: "age", sorter: "number", hozAlign: "left", formatter: "progress" },
                 { title: "Favourite Color", field: "col", sorter: "string", headerSort: false },
-                { title: "Date Of Birth", field: "dob", sorter: "date", hozAlign: "center" },
+                { title: "Date Of Birth", field: "dob", sorter: "date", hozAlign: "center", width: 150 },
             ],
         });
 
@@ -170,6 +178,11 @@
         //trigger download of data.html file
         document.getElementById("download-html").addEventListener("click", function () {
             table.download("html", "data.html", { style: true });
+        });
+        document.getElementById("print").addEventListener("click", function () {
+            table.printHeader = "<h1>THIS IS MY COOL TABLE</h1>"; // set header content on printed table
+            table.printFooter = "<h3>THANKS FOR LOOKING AT MY TABLE</h3>"; // set footer content on printed table
+            table.print(true, true);
         });
     </script>
 
